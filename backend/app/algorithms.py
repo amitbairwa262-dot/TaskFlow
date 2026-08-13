@@ -6,14 +6,13 @@ class AlgorithmsEngine:
     @staticmethod
     def insertion_sort_tasks(tasks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         priority_weights = {"high": 3, "medium": 2, "low": 1, 2:3,1:2,0:1}
-        tasks = tasks.copy()  # original list mutate na ho isliye
+        tasks = tasks.copy()  
 
         for i in range(1, len(tasks)):
             key_task = tasks[i]
             key_weight = priority_weights.get(key_task.get("priority", "low"), 1)
             j = i - 1
 
-            # Higher priority wale tasks ko aage laane ke liye shift karo
             while j >= 0 and priority_weights.get(tasks[j].get("priority", "low"), 1) < key_weight:
                 tasks[j + 1] = tasks[j]
                 j -= 1

@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-# एब्सोल्यूट इम्पोर्ट्स - डॉट (.) का उपयोग न करें
 from app.dependencies import get_db
 from app.models import Task, Project
 from app.schemas import TaskCreate, TaskResponse, TaskUpdate, QuickAddRequest
@@ -29,7 +28,6 @@ def create_task(task: TaskCreate, db: Session = Depends(get_db)):
 def list_all_tasks(db: Session = Depends(get_db)):
     return db.query(Task).all()
 
-# Sorted endpoint - insertion sort use karo
 @router.get("/sorted", response_model=List[TaskResponse])
 def get_priority_sorted_tasks(project_id: int, db: Session = Depends(get_db)):
     tasks = db.query(Task).filter(Task.project_id == project_id).all()
@@ -40,7 +38,6 @@ def get_priority_sorted_tasks(project_id: int, db: Session = Depends(get_db)):
     sorted_dicts = AlgorithmsEngine.insertion_sort_tasks(task_dicts)
     return [TaskResponse(**t) for t in sorted_dicts]
 
-# Search endpoint - linear search use karo (SIRF EK BAAR DEFINE, duplicate hataya)
 @router.get("/search", response_model=List[TaskResponse])
 def search_tasks_by_title(q: str = Query(..., min_length=1), db: Session = Depends(get_db)):
     all_tasks = db.query(Task).all()
@@ -51,7 +48,6 @@ def search_tasks_by_title(q: str = Query(..., min_length=1), db: Session = Depen
     matched = AlgorithmsEngine.linear_search(task_dicts, q)
     return [TaskResponse(**t) for t in matched]
 
-# Find-exact endpoint - binary search use karo
 @router.get("/find-exact", response_model=TaskResponse)
 def find_task_by_exact_title(title: str, project_id: int, db: Session = Depends(get_db)):
     tasks = db.query(Task).filter(Task.project_id == project_id).all()

@@ -10,15 +10,15 @@ class MockAIParser:
         """
         clean_text = text.strip()
 
-        # Priority Extraction Logic
-        priority = "medium"  # Baseline default
+        
+        priority = "medium" 
         if re.search(r'\b(high|urgent|critical)\b', clean_text, re.IGNORECASE):
             priority = "high"
         elif re.search(r'\b(low|backlog|minor)\b', clean_text, re.IGNORECASE):
             priority = "low"
 
-        # Due Date Token Isolation
-        due_date = "today"  # Baseline default
+      
+        due_date = "today"  
         date_match = re.search(r'\bby\s+(.+)$', clean_text, re.IGNORECASE)
         if date_match:
             due_date = date_match.group(1).strip()
@@ -27,16 +27,13 @@ class MockAIParser:
                 '', due_date, flags=re.IGNORECASE
             ).strip()
 
-        # Component Title Reconstruction
         title = clean_text
         title = re.sub(r'\bby\s+.+$', '', title, flags=re.IGNORECASE).strip()
         title = re.sub(r'\bwith\s+(high|medium|low)\s+priority\b', '', title, flags=re.IGNORECASE).strip()
         title = re.sub(r'\b(high|medium|low)\s+priority\b', '', title, flags=re.IGNORECASE).strip()
 
-        # Standalone priority keywords bhi title se hatao (urgent, critical, backlog, minor, low, high)
         title = re.sub(r'\b(urgent|critical|backlog|minor|high|low|medium)\b', '', title, flags=re.IGNORECASE).strip()
 
-        # Multiple spaces ek space mein convert karo (words hatane ke baad gaps ban jaate hain)
         title = re.sub(r'\s{2,}', ' ', title).strip()
 
         if not title:

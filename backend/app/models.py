@@ -34,7 +34,6 @@ class Project(Base):
     __tablename__ = "projects"
 
     id = Column(Integer, primary_key=True, index=True)
-    # HUMLOGON NE YAHAN 'title' KO BADAL KAR 'name' KAR DIYA HAI
     name = Column(String, index=True)  
     description = Column(String, nullable=True)
 

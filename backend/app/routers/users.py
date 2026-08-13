@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
-# एब्सोल्यूट इम्पोर्ट्स (Absolute Imports) का उपयोग करें - शुरुआत में डॉट (.) न लगाएं
 from app.dependencies import get_db
 from app.models import User
 from app.schemas import UserCreate, UserResponse

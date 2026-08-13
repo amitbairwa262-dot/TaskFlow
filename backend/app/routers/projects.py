@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import List
 
-# एब्सोल्यूट इम्पोर्ट्स
 from app.dependencies import get_db
 from app.models import Project, Task
 from app.schemas import ProjectCreate, ProjectResponse, ProjectStats

@@ -1,0 +1,1023 @@
+/* =========================================================
+   TASKFLOW WORKSPACE - MODERN UI
+   ========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #f4f7fc;
+    --white: #ffffff;
+    --text: #17233f;
+    --muted: #68748c;
+    --border: #e1e7f0;
+
+    --blue: #2563eb;
+    --blue-light: #eef4ff;
+
+    --purple: #7c3aed;
+    --purple-light: #f4efff;
+
+    --cyan: #0891b2;
+    --cyan-light: #ecfeff;
+
+    --green: #10b981;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+
+    --shadow:
+        0 8px 25px rgba(30, 50, 90, 0.08);
+
+    --radius: 16px;
+}
+
+
+/* =========================================================
+   BODY
+   ========================================================= */
+
+body {
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f5f8ff 0%,
+            #f8f9fd 50%,
+            #eef7ff 100%
+        );
+
+    color: var(--text);
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.app-header {
+    background: #ffffff;
+
+    min-height: 82px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    padding: 18px 5%;
+
+    border-bottom: 1px solid var(--border);
+
+    box-shadow:
+        0 3px 15px rgba(30, 50, 90, 0.05);
+}
+
+.app-header h1 {
+    color: #1d4ed8;
+
+    font-size: 27px;
+
+    font-weight: 750;
+
+    letter-spacing: -0.5px;
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.search-bar-container {
+    width: 390px;
+}
+
+#global-search-input {
+    width: 100%;
+
+    height: 46px;
+
+    padding: 0 16px;
+
+    background: #ffffff;
+
+    border: 1px solid #dbe2ed;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    color: var(--text);
+
+    font-size: 14px;
+
+    transition: 0.2s ease;
+
+    box-shadow:
+        0 3px 10px rgba(30, 50, 90, 0.04);
+}
+
+#global-search-input::placeholder {
+    color: #9aa5b7;
+}
+
+#global-search-input:focus {
+    border-color: var(--blue);
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+
+/* =========================================================
+   MAIN DASHBOARD
+   ========================================================= */
+
+.dashboard-grid {
+    width: min(1450px, 92%);
+
+    margin: 30px auto 50px;
+
+    display: grid;
+
+    grid-template-columns:
+        390px minmax(0, 1fr);
+
+    gap: 25px;
+
+    align-items: start;
+}
+
+
+/* =========================================================
+   LEFT PANEL
+   ========================================================= */
+
+.control-panel {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+
+    position: sticky;
+
+    top: 20px;
+}
+
+
+/* =========================================================
+   FORM CARD
+   ========================================================= */
+
+.form-card {
+    background: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    padding: 25px;
+
+    box-shadow: var(--shadow);
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+/* Blue top line */
+
+.form-card:first-child::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 4px;
+
+    background: var(--blue);
+}
+
+
+/* Purple AI line */
+
+.form-card.ai-accent {
+    border-top: 4px solid var(--purple);
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff,
+            #fcfaff
+        );
+}
+
+
+/* Operational card */
+
+.form-card:last-child {
+    border-top: 4px solid var(--cyan);
+}
+
+
+.form-card h3 {
+    font-size: 19px;
+
+    font-weight: 700;
+
+    margin-bottom: 24px;
+
+    color: var(--text);
+}
+
+
+/* =========================================================
+   INPUT GROUP
+   ========================================================= */
+
+.input-group {
+    margin-bottom: 19px;
+}
+
+.input-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #34415c;
+
+    font-size: 13px;
+
+    font-weight: 650;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+
+    border: 1px solid #dce3ed;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: var(--text);
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition: 0.2s ease;
+}
+
+.input-group input,
+.input-group select {
+    height: 46px;
+
+    padding: 0 13px;
+}
+
+.input-group textarea {
+    padding: 13px;
+
+    min-height: 115px;
+
+    resize: vertical;
+}
+
+.input-group input::placeholder,
+.input-group textarea::placeholder {
+    color: #a0aabc;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    border-color: var(--blue);
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.error-message {
+    display: block;
+
+    margin-top: 6px;
+
+    color: var(--red);
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   MAIN BUTTONS
+   ========================================================= */
+
+.btn {
+    width: 100%;
+
+    min-height: 48px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 12px 16px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   COMMIT BUTTON
+   ========================================================= */
+
+.btn-primary {
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
+
+    color: white;
+
+    box-shadow:
+        0 7px 18px rgba(37, 99, 235, 0.25);
+}
+
+.btn-primary:hover {
+    filter: brightness(1.05);
+}
+
+
+/* =========================================================
+   AI BUTTON
+   ========================================================= */
+
+.btn-ai {
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #8b5cf6
+        );
+
+    color: white;
+
+    box-shadow:
+        0 7px 18px rgba(124, 58, 237, 0.25);
+}
+
+.btn-ai:hover {
+    filter: brightness(1.05);
+}
+
+
+/* =========================================================
+   OPERATIONAL CONTROLS
+   ========================================================= */
+
+.action-stack {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+/* Same buttons, better design */
+
+.btn-secondary {
+    background:
+        linear-gradient(
+            135deg,
+            #0891b2,
+            #06a6bd
+        );
+
+    color: white;
+
+    box-shadow:
+        0 6px 15px rgba(8, 145, 178, 0.2);
+}
+
+.btn-outline {
+    background: white;
+
+    color: #334155;
+
+    border: 1px solid #bfc9d8;
+}
+
+.btn-outline:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================================================
+   RIGHT DISPLAY PANEL
+   ========================================================= */
+
+.display-panel {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   PANEL HEADER
+   ========================================================= */
+
+.panel-header {
+    background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    padding: 24px;
+
+    margin-bottom: 18px;
+
+    box-shadow: var(--shadow);
+}
+
+.panel-header h2 {
+    font-size: 25px;
+
+    font-weight: 750;
+
+    margin-bottom: 18px;
+
+    color: var(--text);
+}
+
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.stats-banner {
+    min-height: 55px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 12px 16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef4ff,
+            #f5f8ff
+        );
+
+    border: 1px solid #b9ceff;
+
+    border-radius: 10px;
+
+    color: #2563eb;
+
+    font-size: 13px;
+
+    font-weight: 650;
+}
+
+
+/* =========================================================
+   TASK LIST
+   ========================================================= */
+
+.task-list-container {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+
+/* =========================================================
+   TASK CARD
+   IMPORTANT:
+   Your JS uses .task-item-card
+   ========================================================= */
+
+.task-item-card {
+    background: white;
+
+    border: 1px solid #e2e8f0;
+
+    border-left: 5px solid var(--green);
+
+    border-radius: 13px;
+
+    padding: 18px 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    box-shadow:
+        0 5px 18px rgba(30, 50, 90, 0.06);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.task-item-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(30, 50, 90, 0.1);
+}
+
+
+/* =========================================================
+   TASK CONTENT
+   ========================================================= */
+
+.task-core-details {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.task-core-details h4 {
+    margin-bottom: 9px;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    color: #17233f;
+
+    line-height: 1.35;
+}
+
+
+/* =========================================================
+   META TAGS
+   ========================================================= */
+
+.task-meta-tags {
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+.tag {
+    display: inline-block;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.3px;
+}
+
+
+/* Priority */
+
+.tag-priority-low {
+    color: #059669;
+}
+
+.tag-priority-medium {
+    color: #d97706;
+}
+
+.tag-priority-high {
+    color: #dc2626;
+}
+
+
+/* Timeline */
+
+.tag-timeline {
+    color: #0891b2;
+}
+
+
+/* Status */
+
+.tag-status {
+    color: #64748b;
+}
+
+
+/* Add separator-like spacing */
+
+.task-meta-tags .tag + .tag::before {
+    content: "•";
+
+    margin-right: 8px;
+
+    color: #cbd5e1;
+}
+
+
+/* =========================================================
+   TASK ACTION BUTTONS
+   BUTTON NAMES REMAIN SAME
+   ========================================================= */
+
+.task-actions-wrapper {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    flex-shrink: 0;
+}
+
+.task-action-btn {
+    min-height: 38px;
+
+    padding: 8px 13px;
+
+    border-radius: 8px;
+
+    background: white;
+
+    font-family: inherit;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.task-action-btn:hover {
+    transform: translateY(-1px);
+}
+
+
+/* EDIT */
+
+.btn-edit {
+    color: #2563eb;
+
+    border: 1px solid #82aaff;
+
+    background: #ffffff;
+}
+
+.btn-edit:hover {
+    background: #eef4ff;
+
+    box-shadow:
+        0 4px 10px rgba(37, 99, 235, 0.1);
+}
+
+
+/* PATCH */
+
+.btn-patch {
+    color: #0891b2;
+
+    border: 1px solid #67d4e8;
+
+    background: #ffffff;
+}
+
+.btn-patch:hover {
+    background: #ecfeff;
+
+    box-shadow:
+        0 4px 10px rgba(8, 145, 178, 0.1);
+}
+
+
+/* DELETE */
+
+.btn-delete {
+    color: #ef4444;
+
+    border: 1px solid #fca5a5;
+
+    background: #ffffff;
+}
+
+.btn-delete:hover {
+    background: #fef2f2;
+
+    box-shadow:
+        0 4px 10px rgba(239, 68, 68, 0.1);
+}
+
+
+/* =========================================================
+   INLINE EDIT FORM
+   ========================================================= */
+
+.task-edit-form {
+    width: 100%;
+
+    background: #f8fafc;
+
+    border: 1px solid #dbe3ee;
+
+    border-radius: 12px;
+
+    padding: 18px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.task-edit-form label {
+    font-size: 12px;
+
+    font-weight: 700;
+
+    color: #475569;
+
+    margin-top: 4px;
+}
+
+.task-edit-form input,
+.task-edit-form select {
+    width: 100%;
+
+    height: 42px;
+
+    padding: 0 12px;
+
+    border: 1px solid #d5dde8;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: var(--text);
+
+    outline: none;
+
+    font-family: inherit;
+}
+
+.task-edit-form input:focus,
+.task-edit-form select:focus {
+    border-color: var(--blue);
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+
+/* =========================================================
+   EDIT FORM ACTIONS
+   ========================================================= */
+
+.edit-form-actions {
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 8px;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-state {
+    background: white;
+
+    border: 2px dashed #d7deea;
+
+    border-radius: 14px;
+
+    padding: 45px 20px;
+
+    text-align: center;
+
+    color: #7b879c;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.loading-message {
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    color: #64748b;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #eef2f7;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1cad8;
+
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9aa7ba;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+    .dashboard-grid {
+        grid-template-columns: 320px 1fr;
+
+        width: 94%;
+    }
+
+    .task-item-card {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .task-actions-wrapper {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 750px) {
+
+    .app-header {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        padding: 18px 5%;
+    }
+
+    .app-header h1 {
+        font-size: 22px;
+
+        text-align: center;
+    }
+
+    .search-bar-container {
+        width: 100%;
+    }
+
+    .dashboard-grid {
+        width: 94%;
+
+        margin-top: 20px;
+
+        grid-template-columns: 1fr;
+    }
+
+    .control-panel {
+        position: static;
+    }
+
+    .panel-header h2 {
+        font-size: 20px;
+    }
+
+    .task-item-card {
+        padding: 16px;
+    }
+
+    .task-actions-wrapper {
+        flex-wrap: wrap;
+    }
+
+    .task-action-btn {
+        flex: 1;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .form-card {
+        padding: 19px;
+    }
+
+    .panel-header {
+        padding: 18px;
+    }
+
+    .panel-header h2 {
+        font-size: 18px;
+    }
+
+    .task-actions-wrapper {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        width: 100%;
+    }
+
+    .task-action-btn {
+        width: 100%;
+
+        padding: 8px 5px;
+
+        font-size: 11px;
+    }
+
+    .task-meta-tags {
+        gap: 5px;
+    }
+}

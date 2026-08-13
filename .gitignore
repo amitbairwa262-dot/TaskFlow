@@ -1,0 +1,6 @@
+venv/
+backend/venv/
+_pycache_/
+*.pyc
+taskflow.db
+.env

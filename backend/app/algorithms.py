@@ -5,7 +5,7 @@ class AlgorithmsEngine:
     # ---------- 1. INSERTION SORT (priority ke hisaab se: high > medium > low) ----------
     @staticmethod
     def insertion_sort_tasks(tasks: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        priority_weights = {"high": 3, "medium": 2, "low": 1}
+        priority_weights = {"high": 3, "medium": 2, "low": 1, 2:3,1:2,0:1}
         tasks = tasks.copy()  # original list mutate na ho isliye
 
         for i in range(1, len(tasks)):

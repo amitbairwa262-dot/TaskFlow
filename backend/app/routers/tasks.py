@@ -17,7 +17,8 @@ def create_task(task: TaskCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Target project scope does not exist")
     db_task = Task(
         title=task.title, status=task.status, priority=task.priority,
-        due_date=task.due_date, project_id=task.project_id
+        due_date=task.due_date, project_id=task.project_id,
+        assigned_to_id=task.assigned_to_id
     )
     db.add(db_task)
     db.commit()
@@ -25,14 +26,17 @@ def create_task(task: TaskCreate, db: Session = Depends(get_db)):
     return db_task
 
 @router.get("/", response_model=List[TaskResponse])
-def list_all_tasks(db: Session = Depends(get_db)):
-    return db.query(Task).all()
+def list_all_tasks(assigned_to_id: Optional[int] = None, db: Session = Depends(get_db)):
+    query = db.query(Task)
+    if assigned_to_id is not None:
+        query = query.filter(Task.assigned_to_id == assigned_to_id)
+    return query.all()
 
 @router.get("/sorted", response_model=List[TaskResponse])
 def get_priority_sorted_tasks(project_id: int, db: Session = Depends(get_db)):
     tasks = db.query(Task).filter(Task.project_id == project_id).all()
     task_dicts = [
-        {"id": t.id, "title": t.title, "status": t.status, "priority": t.priority, "due_date": t.due_date, "project_id": t.project_id}
+        {"id": t.id, "title": t.title, "status": t.status, "priority": t.priority, "due_date": t.due_date, "project_id": t.project_id, "assigned_to_id": t.assigned_to_id}
         for t in tasks
     ]
     sorted_dicts = AlgorithmsEngine.insertion_sort_tasks(task_dicts)
@@ -42,7 +46,7 @@ def get_priority_sorted_tasks(project_id: int, db: Session = Depends(get_db)):
 def search_tasks_by_title(q: str = Query(..., min_length=1), db: Session = Depends(get_db)):
     all_tasks = db.query(Task).all()
     task_dicts = [
-        {"id": t.id, "title": t.title, "status": t.status, "priority": t.priority, "due_date": t.due_date, "project_id": t.project_id}
+        {"id": t.id, "title": t.title, "status": t.status, "priority": t.priority, "due_date": t.due_date, "project_id": t.project_id, "assigned_to_id": t.assigned_to_id}
         for t in all_tasks
     ]
     matched = AlgorithmsEngine.linear_search(task_dicts, q)
@@ -53,7 +57,7 @@ def find_task_by_exact_title(title: str, project_id: int, db: Session = Depends(
     tasks = db.query(Task).filter(Task.project_id == project_id).all()
     task_dicts = sorted(
         [
-            {"id": t.id, "title": t.title, "status": t.status, "priority": t.priority, "due_date": t.due_date, "project_id": t.project_id}
+            {"id": t.id, "title": t.title, "status": t.status, "priority": t.priority, "due_date": t.due_date, "project_id": t.project_id, "assigned_to_id": t.assigned_to_id}
             for t in tasks
         ],
         key=lambda x: x["title"].lower()
@@ -98,7 +102,6 @@ def patch_task_record(
             detail="Task record not found"
         )
 
-    # Only supplied fields will be updated
     data = updates.model_dump(exclude_unset=True)
 
     if not data:
@@ -130,14 +133,24 @@ def quick_add_task_ai(payload: QuickAddRequest, db: Session = Depends(get_db)):
     if not project:
         raise HTTPException(status_code=404, detail="Target operational project scope not found")
 
-    extracted_data = MockAIParser.parse_natural_language(payload.text)
+    extracted_data = MockAIParser.parse_natural_language(payload.description)
 
-    db_task = Task(
+    validated_task = TaskCreate(
         title=extracted_data["title"],
-        priority=extracted_data["priority"],
+        priority=extracted_data["priority"] or "medium",
         due_date=extracted_data["due_date"],
         status="todo",
-        project_id=payload.project_id
+        project_id=payload.project_id,
+        assigned_to_id=payload.assigned_to_id
+    )
+
+    db_task = Task(
+        title=validated_task.title,
+        priority=validated_task.priority,
+        due_date=validated_task.due_date,
+        status=validated_task.status,
+        project_id=validated_task.project_id,
+        assigned_to_id=validated_task.assigned_to_id
     )
 
     db.add(db_task)

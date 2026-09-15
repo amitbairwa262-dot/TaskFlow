@@ -6,6 +6,7 @@ from sqlalchemy import (
     Boolean,
     ForeignKey,
     DateTime,
+    CheckConstraint,
 )
 from sqlalchemy.orm import relationship
 from .database import Base
@@ -15,7 +16,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, index=True)
+    email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=True)
     is_active = Column(Boolean, default=True)
 
@@ -34,7 +35,7 @@ class Project(Base):
     __tablename__ = "projects"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)  
+    name = Column(String, index=True, nullable=False)
     description = Column(String, nullable=True)
 
     owner_id = Column(
@@ -67,8 +68,8 @@ class Task(Base):
     )
 
     priority = Column(
-        Integer,
-        default=0
+        String,
+        default="low"
     )
 
     due_date = Column(
@@ -101,4 +102,11 @@ class Task(Base):
     assigned_to = relationship(
         "User",
         back_populates="tasks"
+    )
+
+    __table_args__ = (
+        CheckConstraint(
+            "priority IN ('low', 'medium', 'high')",
+            name="check_priority_valid"
+        ),
     )

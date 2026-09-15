@@ -5,18 +5,183 @@ const FALLBACK_PROJECT_ID = 1;
 
 
 /* =========================================================
+   AUTH STATE
+   ========================================================= */
+
+function getCurrentUser() {
+    const raw = localStorage.getItem("taskflow_user");
+    return raw ? JSON.parse(raw) : null;
+}
+
+function setCurrentUser(user) {
+    localStorage.setItem("taskflow_user", JSON.stringify(user));
+}
+
+function clearCurrentUser() {
+    localStorage.removeItem("taskflow_user");
+}
+
+
+/* =========================================================
    PAGE INITIALIZATION
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-    initializeWorkspaceListeners();
-    fetchActiveWorkspaceRegistry();
-    fetchWorkspaceSQLAggregations();
+    initializeAuthListeners();
+
+    const user = getCurrentUser();
+    if (user) {
+        showMainApp(user);
+    } else {
+        showAuthSection();
+    }
 });
 
 
 /* =========================================================
-   EVENT LISTENERS
+   AUTH: SHOW / HIDE SECTIONS
+   ========================================================= */
+
+function showAuthSection() {
+    document.getElementById("auth-section").style.display = "flex";
+    document.getElementById("main-app").style.display = "none";
+}
+
+function showMainApp(user) {
+    document.getElementById("auth-section").style.display = "none";
+    document.getElementById("main-app").style.display = "block";
+
+    const label = document.getElementById("current-user-label");
+    if (label) {
+        label.textContent = `Logged in as: ${user.username}`;
+    }
+
+    initializeWorkspaceListeners();
+    fetchActiveWorkspaceRegistry();
+    fetchWorkspaceSQLAggregations();
+}
+
+
+/* =========================================================
+   AUTH: EVENT LISTENERS
+   ========================================================= */
+
+function initializeAuthListeners() {
+
+    const loginForm = document.getElementById("login-form");
+    const registerForm = document.getElementById("register-form");
+    const showRegisterLink = document.getElementById("show-register");
+    const showLoginLink = document.getElementById("show-login");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    if (loginForm) {
+        loginForm.addEventListener("submit", handleLoginSubmit);
+    }
+
+    if (registerForm) {
+        registerForm.addEventListener("submit", handleRegisterSubmit);
+    }
+
+    if (showRegisterLink) {
+        showRegisterLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            document.getElementById("login-box").style.display = "none";
+            document.getElementById("register-box").style.display = "block";
+        });
+    }
+
+    if (showLoginLink) {
+        showLoginLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            document.getElementById("register-box").style.display = "none";
+            document.getElementById("login-box").style.display = "block";
+        });
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            clearCurrentUser();
+            showAuthSection();
+        });
+    }
+}
+
+
+/* =========================================================
+   AUTH: REGISTER
+   ========================================================= */
+
+async function handleRegisterSubmit(event) {
+    event.preventDefault();
+
+    const username = document.getElementById("register-username").value.trim();
+    const email = document.getElementById("register-email").value.trim();
+    const password = document.getElementById("register-password").value;
+    const errorEl = document.getElementById("register-error");
+
+    errorEl.textContent = "";
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/users/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, email, password })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
+            throw new Error(errorData?.detail || `Register failed (${response.status})`);
+        }
+
+        const user = await response.json();
+        setCurrentUser(user);
+        showMainApp(user);
+
+    } catch (err) {
+        console.error("Register error:", err);
+        errorEl.textContent = err.message;
+    }
+}
+
+
+/* =========================================================
+   AUTH: LOGIN
+   ========================================================= */
+
+async function handleLoginSubmit(event) {
+    event.preventDefault();
+
+    const username = document.getElementById("login-username").value.trim();
+    const password = document.getElementById("login-password").value;
+    const errorEl = document.getElementById("login-error");
+
+    errorEl.textContent = "";
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/users/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
+            throw new Error(errorData?.detail || `Login failed (${response.status})`);
+        }
+
+        const user = await response.json();
+        setCurrentUser(user);
+        showMainApp(user);
+
+    } catch (err) {
+        console.error("Login error:", err);
+        errorEl.textContent = err.message;
+    }
+}
+
+
+/* =========================================================
+   EVENT LISTENERS (main app)
    ========================================================= */
 
 function initializeWorkspaceListeners() {
@@ -28,30 +193,35 @@ function initializeWorkspaceListeners() {
     const searchInput = document.getElementById("global-search-input");
     const titleInput = document.getElementById("task-title");
 
-    if (standardForm) {
+    if (standardForm && !standardForm.dataset.bound) {
         standardForm.addEventListener("submit", commitStandardTask);
+        standardForm.dataset.bound = "true";
     }
 
-    if (aiForm) {
+    if (aiForm && !aiForm.dataset.bound) {
         aiForm.addEventListener("submit", streamAiQuickAddTask);
+        aiForm.dataset.bound = "true";
     }
 
-    if (sortBtn) {
+    if (sortBtn && !sortBtn.dataset.bound) {
         sortBtn.addEventListener("click", runWorkspacePrioritySort);
+        sortBtn.dataset.bound = "true";
     }
 
-    if (refreshBtn) {
+    if (refreshBtn && !refreshBtn.dataset.bound) {
         refreshBtn.addEventListener("click", async () => {
             await fetchActiveWorkspaceRegistry();
             await fetchWorkspaceSQLAggregations();
         });
+        refreshBtn.dataset.bound = "true";
     }
 
-    if (searchInput) {
+    if (searchInput && !searchInput.dataset.bound) {
         searchInput.addEventListener("input", runRealtimePatternSearch);
+        searchInput.dataset.bound = "true";
     }
 
-    if (titleInput) {
+    if (titleInput && !titleInput.dataset.bound) {
         titleInput.addEventListener("input", () => {
             const errorElement =
                 document.getElementById("task-title-error");
@@ -60,6 +230,7 @@ function initializeWorkspaceListeners() {
                 errorElement.textContent = "";
             }
         });
+        titleInput.dataset.bound = "true";
     }
 }
 
@@ -75,13 +246,16 @@ async function fetchActiveWorkspaceRegistry() {
 
     if (!listContainer) return;
 
+    const user = getCurrentUser();
+    if (!user) return;
+
     try {
 
         listContainer.innerHTML =
             '<p class="loading-message">Loading tasks...</p>';
 
         const response =
-            await fetch(`${API_BASE_URL}/tasks/`);
+            await fetch(`${API_BASE_URL}/tasks/?assigned_to_id=${user.id}`);
 
         if (!response.ok) {
             throw new Error(
@@ -197,10 +371,6 @@ function renderWorkspaceDOMRegistry(tasks) {
         itemCard.className = "task-item-card";
 
 
-        /* -----------------------------------------
-           TASK DETAILS
-           ----------------------------------------- */
-
         const coreDetailsWrapper =
             document.createElement("div");
 
@@ -261,18 +431,12 @@ function renderWorkspaceDOMRegistry(tasks) {
         coreDetailsWrapper.appendChild(metaTagsLayout);
 
 
-        /* -----------------------------------------
-           ACTION BUTTONS
-           ----------------------------------------- */
-
         const controlActionsWrapper =
             document.createElement("div");
 
         controlActionsWrapper.className =
             "task-actions-wrapper";
 
-
-        /* EDIT / PUT */
 
         const editBtn =
             document.createElement("button");
@@ -292,8 +456,6 @@ function renderWorkspaceDOMRegistry(tasks) {
         });
 
 
-        /* PATCH */
-
         const patchBtn =
             document.createElement("button");
 
@@ -310,8 +472,6 @@ function renderWorkspaceDOMRegistry(tasks) {
 
         });
 
-
-        /* DELETE */
 
         const deleteBtn =
             document.createElement("button");
@@ -370,8 +530,6 @@ function initiateInlineRecordEdit(
         "task-edit-form";
 
 
-    /* TITLE */
-
     const titleLabel =
         document.createElement("label");
 
@@ -386,8 +544,6 @@ function initiateInlineRecordEdit(
     titleInput.value =
         task.title || "";
 
-
-    /* PRIORITY */
 
     const priorityLabel =
         document.createElement("label");
@@ -419,8 +575,6 @@ function initiateInlineRecordEdit(
         });
 
 
-    /* DUE DATE */
-
     const dueDateLabel =
         document.createElement("label");
 
@@ -438,8 +592,6 @@ function initiateInlineRecordEdit(
     dueDateInput.placeholder =
         "Due date";
 
-
-    /* STATUS */
 
     const statusLabel =
         document.createElement("label");
@@ -470,16 +622,12 @@ function initiateInlineRecordEdit(
         });
 
 
-    /* ERROR */
-
     const errorElement =
         document.createElement("span");
 
     errorElement.className =
         "error-message";
 
-
-    /* SAVE */
 
     const saveBtn =
         document.createElement("button");
@@ -524,8 +672,6 @@ function initiateInlineRecordEdit(
         }
     );
 
-
-    /* CANCEL */
 
     const cancelBtn =
         document.createElement("button");
@@ -735,6 +881,9 @@ async function commitStandardTask(event) {
 
     event.preventDefault();
 
+    const user = getCurrentUser();
+    if (!user) return;
+
 
     const titleInput =
         document.getElementById("task-title");
@@ -789,7 +938,9 @@ async function commitStandardTask(event) {
                         due_date:
                             due_date || null,
                         project_id:
-                            FALLBACK_PROJECT_ID
+                            FALLBACK_PROJECT_ID,
+                        assigned_to_id:
+                            user.id
                     })
                 }
             );
@@ -834,7 +985,6 @@ async function commitStandardTask(event) {
     }
 }
 
-
 /* =========================================================
    AI QUICK ADD - POST
    ========================================================= */
@@ -843,6 +993,8 @@ async function streamAiQuickAddTask(event) {
 
     event.preventDefault();
 
+    const user = getCurrentUser();
+    if (!user) return;
 
     const input =
         document.getElementById(
@@ -877,9 +1029,11 @@ async function streamAiQuickAddTask(event) {
                     },
 
                     body: JSON.stringify({
-                        text: description,
+                        description: description,
                         project_id:
-                            FALLBACK_PROJECT_ID
+                            FALLBACK_PROJECT_ID,
+                        assigned_to_id:
+                            user.id
                     })
                 }
             );
@@ -924,7 +1078,6 @@ async function streamAiQuickAddTask(event) {
         );
     }
 }
-
 
 /* =========================================================
    MERGE/INSERTION SORT
@@ -1021,11 +1174,6 @@ async function runRealtimePatternSearch(event) {
         const matchedTasks =
             await response.json();
 
-
-        /*
-         * Backend search endpoint returns
-         * List[TaskResponse], not a single task.
-         */
 
         renderWorkspaceDOMRegistry(
             matchedTasks

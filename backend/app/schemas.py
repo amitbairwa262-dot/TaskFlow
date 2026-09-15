@@ -1,15 +1,19 @@
 from pydantic import BaseModel, Field, field_validator
-from typing import Optional, List
+from typing import Optional, List, Literal
 
-class UserBase(BaseModel):
+class UserRegister(BaseModel):
+    username: str
     email: str
-    name: str
+    password: str
 
-class UserCreate(UserBase):
-    pass
+class UserLogin(BaseModel):
+    username: str
+    password: str
 
-class UserResponse(UserBase):
+class UserResponse(BaseModel):
     id: int
+    username: str
+    email: str
     class Config:
         from_attributes = True
 
@@ -36,9 +40,10 @@ class ProjectStats(BaseModel):
 class TaskBase(BaseModel):
     title: str
     status: str = "todo"
-    priority: str
+    priority: Literal["low", "medium", "high"] = Field(...)
     due_date: Optional[str] = None
     project_id: int
+    assigned_to_id: Optional[int] = None
 
 class TaskCreate(TaskBase):
     @field_validator("title")
@@ -51,16 +56,14 @@ class TaskCreate(TaskBase):
     @field_validator("priority")
     @classmethod
     def validate_priority_set(cls, value: str) -> str:
-        normalized = value.lower().strip()
-        if normalized not in ["low", "medium", "high"]:
-            raise ValueError("Priority must be explicitly set to 'low', 'medium', or 'high'.")
-        return normalized
+        return value.lower().strip()
 
 class TaskUpdate(BaseModel):
     title: Optional[str] = None
     status: Optional[str] = None
-    priority: Optional[str] = None
+    priority: Optional[Literal["low", "medium", "high"]] = None
     due_date: Optional[str] = None
+    assigned_to_id: Optional[int] = None
 
 class TaskResponse(TaskBase):
     id: int
@@ -68,5 +71,6 @@ class TaskResponse(TaskBase):
         from_attributes = True
 
 class QuickAddRequest(BaseModel):
-    text: str
+    description: str
     project_id: int
+    assigned_to_id: Optional[int] = None

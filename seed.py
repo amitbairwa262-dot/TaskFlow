@@ -13,7 +13,7 @@ from app.models import User, Project, Task
 Base.metadata.create_all(bind=engine)
 
 STATUSES = ["pending", "in_progress", "completed"]
-PRIORITIES = [0, 1, 2]  # low, medium, high (integer scale)
+PRIORITIES = ["low", "medium", "high"]
 
 SAMPLE_TASK_TITLES = [
     "Submit report", "Fix login bug", "Design homepage", "Write unit tests",

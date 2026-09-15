@@ -7,68 +7,122 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="app-header">
-        <h1>AI-Assisted TaskFlow</h1>
-        <div class="search-bar-container">
-            <input type="text" id="global-search-input" placeholder="Search tasks instantly using Rabin-Karp...">
+
+    <!-- Auth Section: Login / Register -->
+    <section id="auth-section" class="auth-container">
+        <div class="form-card auth-card">
+            <h2>TaskFlow</h2>
+
+            <div id="login-box">
+                <h3>Login</h3>
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" required placeholder="Enter username">
+                    </div>
+                    <div class="input-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required placeholder="Enter password">
+                    </div>
+                    <span id="login-error" class="error-message"></span>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                <p class="auth-switch">Naya user ho? <a href="#" id="show-register">Register karo</a></p>
+            </div>
+
+            <div id="register-box" style="display:none;">
+                <h3>Register</h3>
+                <form id="register-form">
+                    <div class="input-group">
+                        <label for="register-username">Username</label>
+                        <input type="text" id="register-username" required placeholder="Choose a username">
+                    </div>
+                    <div class="input-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" required placeholder="you@example.com">
+                    </div>
+                    <div class="input-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" required placeholder="Choose a password">
+                    </div>
+                    <span id="register-error" class="error-message"></span>
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+                <p class="auth-switch">Already account hai? <a href="#" id="show-login">Login karo</a></p>
+            </div>
         </div>
-    </header>
+    </section>
 
-    <main class="dashboard-grid">                                                        
-        <section class="control-panel">
-            <div class="form-card">
-                <h3>Create Structured Task Record</h3>
-                <form id="standard-task-form">
-                    <div class="input-group">
-                        <label for="task-title">Task Title</label>
-                        <input type="text" id="task-title" required placeholder="e.g., Deploy dark store cluster safety patches">
-                        <span id="task-title-error" class="error-message"></span>
-                    </div>
-                    <div class="input-group">
-                        <label for="task-priority">Priority Metric</label>
-                        <select id="task-priority">
-                            <option value="low">Low Priority</option>
-                            <option value="medium" selected>Medium Priority</option>
-                            <option value="high">High Priority</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label for="task-duedate">Target Execution Timeline</label>
-                        <input type="text" id="task-duedate" placeholder="e.g., Next Friday at 5 PM or YYYY-MM-DD">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Commit Task Record</button>
-                </form>
+    <!-- Main App (hidden until logged in) -->
+    <div id="main-app" style="display:none;">
+        <header class="app-header">
+            <h1>AI-Assisted TaskFlow</h1>
+            <div class="search-bar-container">
+                <input type="text" id="global-search-input" placeholder="Search tasks instantly using Rabin-Karp...">
             </div>
-
-            <div class="form-card ai-accent">
-                <h3>NLP Engine AI Quick-Add</h3>
-                <form id="ai-quick-add-form">
-                    <div class="input-group">
-                        <label for="ai-raw-input">Natural English Statement</label>
-                        <textarea id="ai-raw-input" rows="3" required placeholder="e.g., Fix broken inventory pipeline calculations by tomorrow afternoon with high priority"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-ai">Parse & Stream Record</button>
-                </form>
+            <div class="user-bar">
+                <span id="current-user-label"></span>
+                <button id="logout-btn" class="btn btn-outline">Logout</button>
             </div>
+        </header>
 
-            <div class="form-card">
-                <h3>Operational Controls</h3>
-                <div class="action-stack">
-                    <button id="trigger-sort-btn" class="btn btn-secondary">Run Engine Priority Sort (MergeSort)</button>
-                    <button id="trigger-refresh-btn" class="btn btn-outline">Reload Base Workspace</button>
+        <main class="dashboard-grid">
+            <section class="control-panel">
+                <div class="form-card">
+                    <h3>Create Structured Task Record</h3>
+                    <form id="standard-task-form">
+                        <div class="input-group">
+                            <label for="task-title">Task Title</label>
+                            <input type="text" id="task-title" required placeholder="e.g., Deploy dark store cluster safety patches">
+                            <span id="task-title-error" class="error-message"></span>
+                        </div>
+                        <div class="input-group">
+                            <label for="task-priority">Priority Metric</label>
+                            <select id="task-priority">
+                                <option value="low">Low Priority</option>
+                                <option value="medium" selected>Medium Priority</option>
+                                <option value="high">High Priority</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="task-duedate">Target Execution Timeline</label>
+                            <input type="text" id="task-duedate" placeholder="e.g., Next Friday at 5 PM or YYYY-MM-DD">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Commit Task Record</button>
+                    </form>
                 </div>
-            </div>
-        </section>
 
-        <!-- Live Task Content Display Panel -->
-        <section class="display-panel">
-            <header class="panel-header">
-                <h2>Active Task Registry Execution Board</h2>
-                <div id="stats-banner" class="stats-banner">Loading real-time database metric aggregations...</div>
-            </header>
-            <div id="task-list-container" class="task-list-container"></div>
-        </section>
-    </main>
+                <div class="form-card ai-accent">
+                    <h3>NLP Engine AI Quick-Add</h3>
+                    <form id="ai-quick-add-form">
+                        <div class="input-group">
+                            <label for="ai-raw-input">Natural English Statement</label>
+                            <textarea id="ai-raw-input" rows="3" required placeholder="e.g., Fix broken inventory pipeline calculations by tomorrow afternoon with high priority"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-ai">Parse & Stream Record</button>
+                    </form>
+                </div>
+
+                <div class="form-card">
+                    <h3>Operational Controls</h3>
+                    <div class="action-stack">
+                        <button id="trigger-sort-btn" class="btn btn-secondary">Run Engine Priority Sort (MergeSort)</button>
+                        <button id="trigger-refresh-btn" class="btn btn-outline">Reload Base Workspace</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Live Task Content Display Panel -->
+            <section class="display-panel">
+                <header class="panel-header">
+                    <h2>Active Task Registry Execution Board</h2>
+                    <div id="stats-banner" class="stats-banner">Loading real-time database metric aggregations...</div>
+                </header>
+                <div id="task-list-container" class="task-list-container"></div>
+            </section>
+        </main>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
